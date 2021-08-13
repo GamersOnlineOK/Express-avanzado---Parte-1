@@ -1,0 +1,14 @@
+[
+	{
+		"titulo": "Chocolate",
+		"price": "250",
+		"img": "URL",
+		"id": 1
+	},
+	{
+		"titulo": "Chocolate Amargo",
+		"price": "350",
+		"img": "URL",
+		"id": 2
+	}
+]
