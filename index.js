@@ -2,7 +2,7 @@ const exp = require('constants');
 const express = require('express')
 const App = express();
 App.use(express.json());
-App.use(express.urlencoded({ extended: true }));
+App.use(express.urlencoded({ extended: false }));
 const fs = require("fs");
 const Port = 8080;
 const FILE_PRODUCTOS = "productos.txt";
@@ -28,28 +28,37 @@ App.get('/api/productos/listar/:id', (req, res) => {
         .then(data => data.toString('utf-8'))
         .then(datos => {
             const json = JSON.parse(datos);
-            json.map((datos, index) => { parametro == datos.id ? (res.json({ item: datos })) : (res.json({ error: 'producto no encontrado' })) })
+            const filter=json.filter(data=>data.id==parametro);
+            { filter.length>0 ? (res.json({ filter })) : (res.json({ error: 'producto no encontrado' })) }
 
         })
 })
 // ==============GUARDAR PRODUCTO===================
-App.post('/api/productos/guardar/:title/:price/:img', (req, res) => {
+App.post('/api/productos/guardar', (req, res) => {
     
     const array = 
         {
-            titulo: req.params.title,
-            price: req.params.price,
-            img: req.params.img,
+            titulo: req.body.titulo,
+            price: req.body.price,
+            img: req.body.img,
             
         };
+        
        
         fs.promises.readFile(FILE_PRODUCTOS).then(data => {
 
             const json = JSON.parse(data.toString('utf-8'));
-            json.push({ ...array, id: json.length +1 });
-            fs.promises.writeFile(FILE_PRODUCTOS, JSON.stringify(json, null, "\t")).then(() => {
+            const producto=({...array, id:json.length +1});
+            const productoFinal=json.push(producto);
+            res.send(producto)
+            fs.promises.writeFile(FILE_PRODUCTOS, JSON.stringify(json, null, "\t"))
+            .then(() => {
                 console.log("Producto Agregado Correctamente");
-
             })
-        }).then(res.json(array))        
+        }).then(data=>{
+            fs.promises.readFile(FILE_PRODUCTOS)
+            .then(data=>JSON.parse(data.toString('utf-8')))
+            .then(data=>res.json(data.length))
+            
+        })        
 });

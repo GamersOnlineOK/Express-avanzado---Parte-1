@@ -6,9 +6,15 @@
 		"id": 1
 	},
 	{
-		"titulo": "Chocolate Amargo",
-		"price": "350",
-		"img": "URL",
+		"titulo": "torta",
+		"price": "235",
+		"img": "url",
 		"id": 2
+	},
+	{
+		"titulo": "torta",
+		"price": "235",
+		"img": "url",
+		"id": 3
 	}
 ]
