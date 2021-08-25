@@ -12,7 +12,7 @@ router.get('/productos/listar', (req, res) => {
         .then(data => data.toString('utf-8'))
         .then(datos => {
             const json = JSON.parse(datos);
-            {json.length>0?(res.json({ item: json, cantidad: json.length })):(res.send("no hay productos en la lista"))}
+            {json.length>0?(res.render("main",{json , listExist:true})):(res.render("main",{listExist:false}))}
             
         })
 })
@@ -46,10 +46,11 @@ router.post('/productos/guardar', (req, res) => {
             const json = JSON.parse(data.toString('utf-8'));
             const producto=({...array, id:json.length +1});
             const productoFinal=json.push(producto);
-            res.send(producto)
+            res.redirect('/api/productos/listar')
             fs.promises.writeFile(FILE_PRODUCTOS, JSON.stringify(json, null, "\t"))
             .then(() => {
                 console.log("Producto Agregado Correctamente");
+                
             })
         }).then(data=>{
             fs.promises.readFile(FILE_PRODUCTOS)
@@ -61,7 +62,6 @@ router.post('/productos/guardar', (req, res) => {
 // METODOS PUT
 router.put('/productos/actualizar/:id',(req,res)=>{
     var id=req.params.id;
-    console.log(id);
     let actualizacion={
         titulo: req.body.titulo,
         price: req.body.price,
